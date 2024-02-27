@@ -113,126 +113,7 @@ const Home = () => {
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
-  // var val = () => {
-  //   const indexOfLastItem = currentPage * itemsPerPage;
-  //   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  // //   const currentData = event(indexOfFirstItem, indexOfLastItem);
-  // //  {console.log("currrrrrr",currentData)}
-  //   if (event != undefined) {
-  //     const v = event.map((ele, index) => {
-  //      {console.log("777",ele)}
-  //       if (ele) {
-  //         var proId = ele.program;
-  //         var name = [],
-  //           attribute = [],
-  //           // data = [],
-  //           date = [];
-  //           const data = ele.attributes;
-  //           // setData(data.length)
 
-  //         //date['value'] =  JSON.stringify(new Date(ele.eventDate)).slice(1,11);
-  //         // date["value"] = ele.eventDate.substring(0, 10);
-
-  //         // for (let program of options) {
-  //         //   if (program.id == proId) {
-  //         //     name["value"] = program.name;
-  //         //   }
-  //         // }
-
-  //         // sashikat
-  //         // for (let value of ele.attributes) {
-  //         //   attribute["0"] = name;
-  //         //   if (value.attribute == "oh9MPiyR2Vl") {
-  //         //     attribute["1"] = value;
-  //         //   }
-  //         //   if (value.attribute == "HkdYrf7NPbr") {
-  //         //     attribute["2"] = value;
-  //         //   }
-  //         //   if (value.attribute == "ssCmTkWjung") {
-  //         //     attribute["3"] = value;
-  //         //   }
-  //         //   if (value.attribute == "hAfeN4FmzHa") {
-  //         //     attribute["4"] = value;
-  //         //   }
-
-  //         // for(let i=0; i< atrribeyesArr.length; i++){
-  //         //   attribute.push({i:atrribeyesArr[i]})
-  //         // }
-
-  //         // }
-  //         // if (!attribute["1"]) {
-  //         //   let data = [{ value: "" }];
-  //         //   attribute["1"] = data;
-  //         // }
-  //         // if (!attribute["2"]) {
-  //         //   let data = [{ value: "" }];
-  //         //   attribute["2"] = data;
-  //         // }
-  //         // if (!attribute["3"]) {
-  //         //   let data = [{ value: "" }];
-  //         //   attribute["3"] = data;
-  //         // }
-  //         // if (!attribute["4"]) {
-  //         //   let data = [{ value: "" }];
-  //         //   attribute["4"] = data;
-  //         // }
-
-  //         console.log('data',data)
-  //         // console.log("DATA",Data)
-  //         return (
-  //           <>
-  //             {data.length ? (
-  //               <TableRow>
-  //                 {data.map((ele) => (
-  //                   <>
-  //                   <TableCell>{ele.value}</TableCell>
-
-  //                   </>
-  //                 ))}
-  //                 {/* <Button primary={true} onClick={() => onEdit(ele.orgUnit, ele.event, ele.dataValues)}>Edit</Button> */}
-  //               </TableRow>
-  //             ) : (
-  //               ""
-  //             )}
-  //           </>
-  //         );
-  //       }
-  //     });
-  //     return v;
-  //   }
-  // };
-
-  // const val = () => {
-  //   const indexOfLastItem = currentPage * itemsPerPage;
-  //   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-
-  //   if (event !== undefined) {
-  //     const filteredData = event
-  //       .filter((ele) => {
-  //         return Object.keys(searchValues).every((attributeId) => {
-  //           const searchValue = searchValues[attributeId];
-  //           const attribute = ele.attributes.find(
-  //             (attr) => attr.attribute === attributeId
-  //           );
-  //           return (
-  //             !searchValue ||
-  //             (attribute && attribute.value.includes(searchValue))
-  //           );
-  //         });
-  //       })
-  //       .slice(indexOfFirstItem, indexOfLastItem);
-
-  //     return filteredData.map((ele, index) => (
-  //       <TableRow key={index}>
-  //         {ele.attributes.map((attr, attrIndex) => (
-  //           <TableCell key={attrIndex}>{attr.value}</TableCell>
-  //         ))}
-  //       </TableRow>
-  //     ));
-  //   } else {
-  //     return null; // Handle case where event is undefined or empty
-  //   }
-  // };
   const val = () => {
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -451,7 +332,11 @@ const Home = () => {
                       <TableCell
                         key={ele?.trackedEntityAttribute?.id}
                         style={{ whiteSpace: "nowrap" }}
-                        className={darkMode? `${classes.searchBackground} ${classes.itemAlign}`: ` ${classes.itemAlign}`}
+                        className={
+                          darkMode
+                            ? `${classes.searchBackground} ${classes.itemAlign}`
+                            : ` ${classes.itemAlign}`
+                        }
                         // className={darkMode ? classes.darkTable : classes.lightTable}
                       >
                         <input
