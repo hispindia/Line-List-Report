@@ -16,7 +16,7 @@ const Modal = ({ modalStyle, children, show, onClose, backdropStyle }) => {
         ref={modalRef}
         // style={{zIndex: onClose ? "-9" : "9999"}}
         className={`${styles.modal__wrap}`}
-        onClick={onClose}
+        // onClick={onClose}
       >
         <div style={modalStyle} className={`${styles.modal} flex flex-col`}>
           <button
@@ -26,8 +26,8 @@ const Modal = ({ modalStyle, children, show, onClose, backdropStyle }) => {
           >
             <i
               class="fa-solid fa-xmark bold"
-              style={{ color: "#444", fontSize: "14px" }}
-            ></i>
+              style={{ color: "#444", fontSize: "16px",marginLeft:'460px',cursor:'pointer' }}
+            >X</i>
           </button>
           {children}
         </div>

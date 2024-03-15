@@ -11,7 +11,6 @@ import { OPDService } from "./Services/api";
 
 const Home = () => {
   const [options, setOptions] = useState([]);
-  
   const [selectedProgramValue, setSelectedProgramValue] = useState("");
   const [event, setEvent] = useState([]);
   const [Data, setData] = useState("");
@@ -23,13 +22,10 @@ const Home = () => {
   const [eventData, setEventData] = useState([]);
   const [programStages, setProgramStages] = useState([]);
   const [dataElements, setDataElements] = useState([]);
-
   const [programName, setProgramName] = useState("");
-
   const [darkMode, setDarkMode] = useState(
     localStorage.getItem("darkMode") === "true"
   );
-
   useEffect(() => {
     localStorage.setItem("darkMode", darkMode);
   }, [darkMode]);
@@ -37,6 +33,7 @@ const Home = () => {
   const toggleMode = () => {
     setDarkMode(!darkMode);
   };
+  //Table Excel funtion
   const tableToExcel = (function () {
     var uri = "data:application/vnd.ms-excel;base64,",
       template =
@@ -253,26 +250,66 @@ const Home = () => {
           });
         })
         .slice(indexOfFirstItem, indexOfLastItem);
+      console.log("filteredData>>>>>", filteredData);
 
       return filteredData.map((ele, index) => {
         return (
           <TableRow key={index} className={classes.zebraStriping}>
             {header1?.programTrackedEntityAttributes?.map((attribute) => {
+              console.log(
+                "ele>>>>>>>>>>",
+                attribute?.trackedEntityAttribute?.id
+              );
+              const colorId = attribute?.trackedEntityAttribute?.id;
+
               const foundAttribute = ele.attributes.find(
                 (attr) =>
                   attr.attribute === attribute?.trackedEntityAttribute?.id
               );
+              console.log("foundAttribute>>>>", foundAttribute);
               const TrackID = ele.trackedEntityInstance;
-
+              console.log("TrackID>>>", TrackID);
               return (
-                <TableCell
-                  key={attribute?.trackedEntityAttribute?.id}
-                  className={classes.itemAlign}
-                >
-                  <div onClick={() => setShow({ value: true, id: TrackID })}>
-                    {foundAttribute ? foundAttribute.value : ""}
-                  </div>
-                </TableCell>
+                <>
+                  {colorId === "C3kyKVIuJiv" &&
+                  foundAttribute &&
+                  foundAttribute.value >= 4 ? (
+                    <TableCell
+                      key={attribute?.trackedEntityAttribute?.id}
+                      className={`${classes.uniqueColorRed} ${classes.itemAlign}`}
+                    >
+                      <div
+                        onClick={() => setShow({ value: true, id: TrackID })}
+                      >
+                        {foundAttribute ? foundAttribute.value : ""}
+                      </div>
+                    </TableCell>
+                  ) : colorId === "C3kyKVIuJiv" &&
+                    foundAttribute &&
+                    foundAttribute.value <= 4 ? (
+                    <TableCell
+                      key={attribute?.trackedEntityAttribute?.id}
+                      className={`${classes.uniqueColorGreen} ${classes.itemAlign}`}
+                    >
+                      <div
+                        onClick={() => setShow({ value: true, id: TrackID })}
+                      >
+                        {foundAttribute ? foundAttribute.value : ""}
+                      </div>
+                    </TableCell>
+                  ) : (
+                    <TableCell
+                      key={attribute?.trackedEntityAttribute?.id}
+                      className={classes.itemAlign}
+                    >
+                      <div
+                        onClick={() => setShow({ value: true, id: TrackID })}
+                      >
+                        {foundAttribute ? foundAttribute.value : ""}
+                      </div>
+                    </TableCell>
+                  )}
+                </>
               );
             })}
           </TableRow>
@@ -352,142 +389,155 @@ const Home = () => {
     );
     return dataelementName ? dataelementName.name : "Unknown";
   };
+  console.log(
+    "header1?.programTrackedEntityAttributes>>>>",
+    header1?.programTrackedEntityAttributes
+  );
   return (
     <>
-      <div
-        className={darkMode ? classes["dark-mode"] : classes["light-mode"]}
-        style={{ overflow: "auto" }}
-      >
-        <div style={{ padding: "5px" }}>
-          <div>
-            {options.length > 0 && (
-              <select onChange={handleSelectChange}>
-                <option value="">Select Program for Event List</option>
-                {options.map((option) => (
-                  <option
-                    key={option[0]}
-                    value={JSON.stringify({ id: option[0], name: option[1] })}
-                  >
-                    {option[1]}
-                  </option>
-                ))}
-              </select>
-            )}
-            <button onClick={toggleMode}>
-              {darkMode ? "Light Mode" : "Dark Mode"}
-            </button>
-            <button
-              onClick={() => tableToExcel("report-table", "Timor Event List")}
-            >
-              Export Data
-            </button>
-          </div>
+      <div className={classes.container}>
+        <div
+          className={darkMode ? classes["dark-mode"] : classes["light-mode"]}
+          style={{ overflow: "auto", borderRadius: "10px" }}
+        >
+          <div style={{ padding: "5px" }}>
+            <div>
+              {options.length > 0 && (
+                <select onChange={handleSelectChange}>
+                  <option value="">Select Program for Event List</option>
+                  {options.map((option) => (
+                    <option
+                      key={option[0]}
+                      value={JSON.stringify({ id: option[0], name: option[1] })}
+                    >
+                      {option[1]}
+                    </option>
+                  ))}
+                </select>
+              )}
+              <button onClick={toggleMode}>
+                {darkMode ? "Light Mode" : "Dark Mode"}
+              </button>
+              <button
+                onClick={() => tableToExcel("report-table", "Timor Event List")}
+              >
+                Export Data
+              </button>
+            </div>
 
-          <Modal show={show.value} onClose={() => setShow({ value: false })}>
-            <Table
-              className={darkMode ? classes.darkTable : classes.lightTable}
-            >
-              <TableRow>
-                <TableCell>Selected Program:</TableCell>
-                <TableCell>{programName ? programName : ""}</TableCell>
-              </TableRow>
-              {eventData?.events?.map((event, index) => (
-                <div>
-                  <TableRow>
-                    <TableCell>Program Stage:</TableCell>
-                    <TableCell>
-                      {getNameProgameStage(event?.programStage)}
-                    </TableCell>
-                  </TableRow>
-
-                  <TableRow className={classes.zebraStriping}>
-                    <TableCell>Event Date:</TableCell>
-                    <TableCell>
-                      {event.eventDate ? event.eventDate.split("T")[0] : ""}
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>Status:</TableCell>
-                    <TableCell>{event.status}</TableCell>
-                  </TableRow>
-                  {event?.dataValues?.length > 0 && (
-                    <>
-                      <span>DataElements</span>
-                      <TableRow className={classes.zebraStriping}>
-                        {event?.dataValues?.map((dataValue, idx) => (
-                          <TableRow key={idx} className={classes.zebraStriping}>
-                            <TableCell>
-                              {getNameDataElement(dataValue?.dataElement)}:
-                            </TableCell>
-                            <TableCell> {dataValue.value}</TableCell>
-                          </TableRow>
-                        ))}
-                      </TableRow>
-                    </>
-                  )}
-                </div>
-              ))}
-            </Table>
-          </Modal>
-          <div className={classes.desgin}>
-            <a id="dlink"></a>
-            <div id="report-table">
+            <Modal show={show.value} onClose={() => setShow({ value: false })}>
               <Table
                 className={darkMode ? classes.darkTable : classes.lightTable}
               >
                 <TableRow>
-                  {header1?.programTrackedEntityAttributes?.map((ele) => (
-                    <TableCell
-                      key={ele?.trackedEntityAttribute?.id}
-                      style={{ whiteSpace: "nowrap" }}
-                      className={classes.itemAlign}
-                    >
-                      <b>{ele?.trackedEntityAttribute?.name}</b>
-                    </TableCell>
-                  ))}
+                  <TableCell>Selected Program:</TableCell>
+                  <TableCell>{programName ? programName : ""}</TableCell>
                 </TableRow>
-                <TableRow>
-                  {header1?.programTrackedEntityAttributes?.map((ele) => (
-                    <React.Fragment key={ele?.trackedEntityAttribute?.id}>
+                {eventData?.events?.map((event, index) => (
+                  <div>
+                    <TableRow>
+                      <TableCell>Program Stage:</TableCell>
+                      <TableCell>
+                        {getNameProgameStage(event?.programStage)}
+                      </TableCell>
+                    </TableRow>
+
+                    <TableRow className={classes.zebraStriping}>
+                      <TableCell>Event Date:</TableCell>
+                      <TableCell>
+                        {event.eventDate ? event.eventDate.split("T")[0] : ""}
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell>Status:</TableCell>
+                      <TableCell>{event.status}</TableCell>
+                    </TableRow>
+                    {event?.dataValues?.length > 0 && (
+                      <>
+                        <span>DataElements</span>
+                        <TableRow className={classes.zebraStriping}>
+                          {event?.dataValues?.map((dataValue, idx) => (
+                            <TableRow
+                              key={idx}
+                              className={classes.zebraStriping}
+                            >
+                              <TableCell>
+                                {getNameDataElement(dataValue?.dataElement)}:
+                              </TableCell>
+                              <TableCell> {dataValue.value}</TableCell>
+                            </TableRow>
+                          ))}
+                        </TableRow>
+                      </>
+                    )}
+                  </div>
+                ))}
+              </Table>
+            </Modal>
+            
+            <div className={classes.desgin}>
+              <a id="dlink"></a>
+              <div id="report-table">
+                <Table
+                  className={darkMode ? classes.darkTable : classes.lightTable}
+                >
+                  <TableRow>
+                    {header1?.programTrackedEntityAttributes?.map((ele) => (
                       <TableCell
                         key={ele?.trackedEntityAttribute?.id}
                         style={{ whiteSpace: "nowrap" }}
-                        className={darkMode? `${classes.searchBackground} ${classes.itemAlign}`: ` ${classes.itemAlign}`}
-                        // className={darkMode ? classes.darkTable : classes.lightTable}
+                        className={classes.itemAlign}
                       >
-                        <input
-                          type="text"
-                          placeholder={`Search ${ele?.trackedEntityAttribute?.name}`}
-                          onChange={(e) =>
-                            handleSearchChange(
-                              ele?.trackedEntityAttribute?.id,
-                              e.target.value
-                            )
-                          }
-                        />
+                        <b>{ele?.trackedEntityAttribute?.name}</b>
                       </TableCell>
-                    </React.Fragment>
-                  ))}
-                </TableRow>
-                {isLoading ? (
-                  <div>
-                    <CircularProgress />
-                  </div>
-                ) : (
-                  <TableBody>{val()}</TableBody>
-                )}
-              </Table>
+                    ))}
+                  </TableRow>
+                  <TableRow>
+                    {header1?.programTrackedEntityAttributes?.map((ele) => (
+                      <React.Fragment key={ele?.trackedEntityAttribute?.id}>
+                        <TableCell
+                          key={ele?.trackedEntityAttribute?.id}
+                          style={{ whiteSpace: "nowrap" }}
+                          className={
+                            darkMode
+                              ? `${classes.searchBackground} ${classes.itemAlign}`
+                              : ` ${classes.itemAlign}`
+                          }
+                          // className={darkMode ? classes.darkTable : classes.lightTable}
+                        >
+                          <input
+                            type="text"
+                            placeholder={`Search ${ele?.trackedEntityAttribute?.name}`}
+                            onChange={(e) =>
+                              handleSearchChange(
+                                ele?.trackedEntityAttribute?.id,
+                                e.target.value
+                              )
+                            }
+                          />
+                        </TableCell>
+                      </React.Fragment>
+                    ))}
+                  </TableRow>
+                  {isLoading ? (
+                    <div>
+                      <CircularProgress />
+                    </div>
+                  ) : (
+                    <TableBody>{val()}</TableBody>
+                  )}
+                </Table>
+              </div>
+             <ReactPaginate
+                activePage={currentPage}
+                itemsCountPerPage={itemsPerPage}
+                totalItemsCount={Data}
+                pageRangeDisplayed={5}
+                onChange={handlePageChange}
+                itemClass="page-item"
+                linkClass="page-link"
+              />
             </div>
-
-            <ReactPaginate
-              activePage={currentPage}
-              itemsCountPerPage={itemsPerPage}
-              totalItemsCount={Data}
-              pageRangeDisplayed={5}
-              onChange={handlePageChange}
-              itemClass="page-item"
-              linkClass="page-link"
-            />
           </div>
         </div>
       </div>

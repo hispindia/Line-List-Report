@@ -237,27 +237,48 @@ const Home = () => {
           return !searchValue || attribute && attribute.value.includes(searchValue);
         });
       }).slice(indexOfFirstItem, indexOfLastItem);
+      console.log("filteredData>>>>>", filteredData);
       return filteredData.map((ele, index) => {
         var _header1$programTrack;
         return /*#__PURE__*/React.createElement(TableRow, {
           key: index,
           className: classes.zebraStriping
         }, header1 === null || header1 === void 0 ? void 0 : (_header1$programTrack = header1.programTrackedEntityAttributes) === null || _header1$programTrack === void 0 ? void 0 : _header1$programTrack.map(attribute => {
-          var _attribute$trackedEnt2;
+          var _attribute$trackedEnt, _attribute$trackedEnt2, _attribute$trackedEnt4, _attribute$trackedEnt5, _attribute$trackedEnt6;
+          console.log("ele>>>>>>>>>>", attribute === null || attribute === void 0 ? void 0 : (_attribute$trackedEnt = attribute.trackedEntityAttribute) === null || _attribute$trackedEnt === void 0 ? void 0 : _attribute$trackedEnt.id);
+          const colorId = attribute === null || attribute === void 0 ? void 0 : (_attribute$trackedEnt2 = attribute.trackedEntityAttribute) === null || _attribute$trackedEnt2 === void 0 ? void 0 : _attribute$trackedEnt2.id;
           const foundAttribute = ele.attributes.find(attr => {
-            var _attribute$trackedEnt;
-            return attr.attribute === (attribute === null || attribute === void 0 ? void 0 : (_attribute$trackedEnt = attribute.trackedEntityAttribute) === null || _attribute$trackedEnt === void 0 ? void 0 : _attribute$trackedEnt.id);
+            var _attribute$trackedEnt3;
+            return attr.attribute === (attribute === null || attribute === void 0 ? void 0 : (_attribute$trackedEnt3 = attribute.trackedEntityAttribute) === null || _attribute$trackedEnt3 === void 0 ? void 0 : _attribute$trackedEnt3.id);
           });
+          console.log("foundAttribute>>>>", foundAttribute);
           const TrackID = ele.trackedEntityInstance;
-          return /*#__PURE__*/React.createElement(TableCell, {
-            key: attribute === null || attribute === void 0 ? void 0 : (_attribute$trackedEnt2 = attribute.trackedEntityAttribute) === null || _attribute$trackedEnt2 === void 0 ? void 0 : _attribute$trackedEnt2.id,
+          console.log("TrackID>>>", TrackID);
+          return /*#__PURE__*/React.createElement(React.Fragment, null, colorId === "C3kyKVIuJiv" && foundAttribute && foundAttribute.value >= 4 ? /*#__PURE__*/React.createElement(TableCell, {
+            key: attribute === null || attribute === void 0 ? void 0 : (_attribute$trackedEnt4 = attribute.trackedEntityAttribute) === null || _attribute$trackedEnt4 === void 0 ? void 0 : _attribute$trackedEnt4.id,
+            className: `${classes.uniqueColorRed} ${classes.itemAlign}`
+          }, /*#__PURE__*/React.createElement("div", {
+            onClick: () => setShow({
+              value: true,
+              id: TrackID
+            })
+          }, foundAttribute ? foundAttribute.value : "")) : colorId === "C3kyKVIuJiv" && foundAttribute && foundAttribute.value <= 4 ? /*#__PURE__*/React.createElement(TableCell, {
+            key: attribute === null || attribute === void 0 ? void 0 : (_attribute$trackedEnt5 = attribute.trackedEntityAttribute) === null || _attribute$trackedEnt5 === void 0 ? void 0 : _attribute$trackedEnt5.id,
+            className: `${classes.uniqueColorGreen} ${classes.itemAlign}`
+          }, /*#__PURE__*/React.createElement("div", {
+            onClick: () => setShow({
+              value: true,
+              id: TrackID
+            })
+          }, foundAttribute ? foundAttribute.value : "")) : /*#__PURE__*/React.createElement(TableCell, {
+            key: attribute === null || attribute === void 0 ? void 0 : (_attribute$trackedEnt6 = attribute.trackedEntityAttribute) === null || _attribute$trackedEnt6 === void 0 ? void 0 : _attribute$trackedEnt6.id,
             className: classes.itemAlign
           }, /*#__PURE__*/React.createElement("div", {
             onClick: () => setShow({
               value: true,
               id: TrackID
             })
-          }, foundAttribute ? foundAttribute.value : ""));
+          }, foundAttribute ? foundAttribute.value : "")));
         }));
       });
     } else {
@@ -311,10 +332,14 @@ const Home = () => {
     const dataelementName = dataElements === null || dataElements === void 0 ? void 0 : (_dataElements$dataEle = dataElements.dataElements) === null || _dataElements$dataEle === void 0 ? void 0 : _dataElements$dataEle.find(stage => stage.id === id);
     return dataelementName ? dataelementName.name : "Unknown";
   };
+  console.log("header1?.programTrackedEntityAttributes>>>>", header1 === null || header1 === void 0 ? void 0 : header1.programTrackedEntityAttributes);
   return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
+    className: classes.container
+  }, /*#__PURE__*/React.createElement("div", {
     className: darkMode ? classes["dark-mode"] : classes["light-mode"],
     style: {
-      overflow: "auto"
+      overflow: "auto",
+      borderRadius: '10px'
     }
   }, /*#__PURE__*/React.createElement("div", {
     style: {
@@ -395,6 +420,6 @@ const Home = () => {
     onChange: handlePageChange,
     itemClass: "page-item",
     linkClass: "page-link"
-  })))));
+  }))))));
 };
 export default Home;

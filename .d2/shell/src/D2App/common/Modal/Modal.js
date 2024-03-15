@@ -20,8 +20,8 @@ const Modal = _ref => {
     ref: modalRef
     // style={{zIndex: onClose ? "-9" : "9999"}}
     ,
-    className: `${styles.modal__wrap}`,
-    onClick: onClose
+    className: `${styles.modal__wrap}`
+    // onClick={onClose}
   }, /*#__PURE__*/React.createElement("div", {
     style: modalStyle,
     className: `${styles.modal} flex flex-col`
@@ -36,8 +36,10 @@ const Modal = _ref => {
     class: "fa-solid fa-xmark bold",
     style: {
       color: "#444",
-      fontSize: "14px"
+      fontSize: "16px",
+      marginLeft: '460px',
+      cursor: 'pointer'
     }
-  })), children)));
+  }, "X")), children)));
 };
 export default Modal;
