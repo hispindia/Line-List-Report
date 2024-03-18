@@ -488,7 +488,7 @@ const Home = () => {
                         style={{ whiteSpace: "nowrap" }}
                         className={classes.itemAlign}
                       >
-                        <b>{ele?.trackedEntityAttribute?.name}</b>
+                        <b >{ele?.trackedEntityAttribute?.name}</b>
                       </TableCell>
                     ))}
                   </TableRow>

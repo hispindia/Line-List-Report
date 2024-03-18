@@ -254,7 +254,7 @@ const Home = () => {
           });
           console.log("foundAttribute>>>>", foundAttribute);
           const TrackID = ele.trackedEntityInstance;
-          console.log("TrackID>>>", ele);
+          console.log("TrackID>>>", TrackID);
           return /*#__PURE__*/React.createElement(React.Fragment, null, colorId === "EMY2mCFePQj" && foundAttribute && foundAttribute.value >= 4 ? /*#__PURE__*/React.createElement(TableCell, {
             key: attribute === null || attribute === void 0 ? void 0 : (_attribute$trackedEnt4 = attribute.trackedEntityAttribute) === null || _attribute$trackedEnt4 === void 0 ? void 0 : _attribute$trackedEnt4.id,
             className: `${classes.uniqueColorRed} ${classes.itemAlign}`
