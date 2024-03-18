@@ -34,6 +34,7 @@ const Home = () => {
   const toggleMode = () => {
     setDarkMode(!darkMode);
   };
+  //Table Excel funtion
   const tableToExcel = function () {
     var uri = "data:application/vnd.ms-excel;base64,",
       template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body><table>{table}</table></body></html>',
@@ -253,8 +254,8 @@ const Home = () => {
           });
           console.log("foundAttribute>>>>", foundAttribute);
           const TrackID = ele.trackedEntityInstance;
-          console.log("TrackID>>>", TrackID);
-          return /*#__PURE__*/React.createElement(React.Fragment, null, colorId === "C3kyKVIuJiv" && foundAttribute && foundAttribute.value >= 4 ? /*#__PURE__*/React.createElement(TableCell, {
+          console.log("TrackID>>>", ele);
+          return /*#__PURE__*/React.createElement(React.Fragment, null, colorId === "EMY2mCFePQj" && foundAttribute && foundAttribute.value >= 4 ? /*#__PURE__*/React.createElement(TableCell, {
             key: attribute === null || attribute === void 0 ? void 0 : (_attribute$trackedEnt4 = attribute.trackedEntityAttribute) === null || _attribute$trackedEnt4 === void 0 ? void 0 : _attribute$trackedEnt4.id,
             className: `${classes.uniqueColorRed} ${classes.itemAlign}`
           }, /*#__PURE__*/React.createElement("div", {
@@ -262,7 +263,7 @@ const Home = () => {
               value: true,
               id: TrackID
             })
-          }, foundAttribute ? foundAttribute.value : "")) : colorId === "C3kyKVIuJiv" && foundAttribute && foundAttribute.value <= 4 ? /*#__PURE__*/React.createElement(TableCell, {
+          }, foundAttribute ? foundAttribute.value : "")) : colorId === "EMY2mCFePQj" && foundAttribute && foundAttribute.value <= 4 ? /*#__PURE__*/React.createElement(TableCell, {
             key: attribute === null || attribute === void 0 ? void 0 : (_attribute$trackedEnt5 = attribute.trackedEntityAttribute) === null || _attribute$trackedEnt5 === void 0 ? void 0 : _attribute$trackedEnt5.id,
             className: `${classes.uniqueColorGreen} ${classes.itemAlign}`
           }, /*#__PURE__*/React.createElement("div", {
@@ -339,7 +340,7 @@ const Home = () => {
     className: darkMode ? classes["dark-mode"] : classes["light-mode"],
     style: {
       overflow: "auto",
-      borderRadius: '10px'
+      borderRadius: "10px"
     }
   }, /*#__PURE__*/React.createElement("div", {
     style: {

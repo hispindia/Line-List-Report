@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import styles from "./Model.module.css";
 
+import CancelIcon from "@material-ui/icons/Cancel";
 const Modal = ({ modalStyle, children, show, onClose, backdropStyle }) => {
   const modalRef = useRef(null);
   useEffect(() => {
@@ -24,10 +25,11 @@ const Modal = ({ modalStyle, children, show, onClose, backdropStyle }) => {
             className="ml-auto py-0 px-2"
             style={{ border: "none", background: "#e5e5e5" }}
           >
-            <i
+            {/* <i
               class="fa-solid fa-xmark bold"
               style={{ color: "#444", fontSize: "16px",marginLeft:'460px',cursor:'pointer' }}
-            >X</i>
+            >X</i> */}
+            <CancelIcon style={{ marginLeft: "460px", cursor: "pointer" }} />
           </button>
           {children}
         </div>

@@ -271,7 +271,7 @@ const Home = () => {
               console.log("TrackID>>>", TrackID);
               return (
                 <>
-                  {colorId === "C3kyKVIuJiv" &&
+                  {colorId === "EMY2mCFePQj" &&
                   foundAttribute &&
                   foundAttribute.value >= 4 ? (
                     <TableCell
@@ -284,7 +284,7 @@ const Home = () => {
                         {foundAttribute ? foundAttribute.value : ""}
                       </div>
                     </TableCell>
-                  ) : colorId === "C3kyKVIuJiv" &&
+                  ) : colorId === "EMY2mCFePQj" &&
                     foundAttribute &&
                     foundAttribute.value <= 4 ? (
                     <TableCell
@@ -474,7 +474,7 @@ const Home = () => {
                 ))}
               </Table>
             </Modal>
-            
+
             <div className={classes.desgin}>
               <a id="dlink"></a>
               <div id="report-table">
@@ -528,7 +528,7 @@ const Home = () => {
                   )}
                 </Table>
               </div>
-             <ReactPaginate
+              <ReactPaginate
                 activePage={currentPage}
                 itemsCountPerPage={itemsPerPage}
                 totalItemsCount={Data}

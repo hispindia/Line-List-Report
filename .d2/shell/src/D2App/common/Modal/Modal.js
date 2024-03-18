@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import styles from "./Model.module.css";
+import CancelIcon from "@material-ui/icons/Cancel";
 const Modal = _ref => {
   let {
     modalStyle,
@@ -32,14 +33,11 @@ const Modal = _ref => {
       border: "none",
       background: "#e5e5e5"
     }
-  }, /*#__PURE__*/React.createElement("i", {
-    class: "fa-solid fa-xmark bold",
+  }, /*#__PURE__*/React.createElement(CancelIcon, {
     style: {
-      color: "#444",
-      fontSize: "16px",
-      marginLeft: '460px',
-      cursor: 'pointer'
+      marginLeft: "460px",
+      cursor: "pointer"
     }
-  }, "X")), children)));
+  })), children)));
 };
 export default Modal;
