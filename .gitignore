@@ -34,3 +34,6 @@ node_modules
 **/rebel.xml
 .d2
 build
+*.gzip
+build/
+*.zip
