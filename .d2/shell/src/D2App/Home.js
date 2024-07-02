@@ -26,15 +26,48 @@ const Home = () => {
   const [programStages, setProgramStages] = useState([]);
   const [dataElements, setDataElements] = useState([]);
   const [programName, setProgramName] = useState("");
-  const [darkMode, setDarkMode] = useState(localStorage.getItem("darkMode") === "true");
-  useEffect(() => {
-    localStorage.setItem("darkMode", darkMode);
-  }, [darkMode]);
+  // const [darkMode, setDarkMode] = useState(
+  //   localStorage.getItem("darkMode") === "true"
+  // );
+  const [darkMode, setDarkMode] = useState(true);
+  const [modifyheader, setModifyheader] = useState([]);
+  const [resultHeader, setResultHeader] = useState([]);
+  const [pagesize, setPagesize] = useState(10);
+
+  // useEffect(() => {
+  //   localStorage.setItem("darkMode", darkMode);
+  // }, [darkMode]);
   const componentRef = useRef(null);
   const toggleMode = () => {
     setDarkMode(!darkMode);
   };
+  console.log("toggle mode???", toggleMode);
+  console.log("set dark mode???", darkMode);
+  console.log(" localStorage.getItem", localStorage);
   //Table Excel funtion
+  // const tableToExcel = (function () {
+  //   var uri = "data:application/vnd.ms-excel;base64,",
+  //     template =
+  //       '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body><table>{table}</table></body></html>',
+  //     base64 = function (s) {
+  //       return window.btoa(unescape(encodeURIComponent(s)));
+  //     },
+  //     format = function (s, c) {
+  //       return s.replace(/{(\w+)}/g, function (m, p) {
+  //         return c[p];
+  //       });
+  //     };
+  //   return function (table, name, filename) {
+  //     if (!table.nodeType) table = document.getElementById(table);
+
+  //     var ctx = { worksheet: name || "Worksheet", table: table.innerHTML };
+  //     document.getElementById("dlink").href =
+  //       uri + base64(format(template, ctx));
+  //     document.getElementById("dlink").download = `${name}.xls`;
+  //     document.getElementById("dlink").click();
+  //   };
+  // })();
+
   const tableToExcel = function () {
     var uri = "data:application/vnd.ms-excel;base64,",
       template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body><table>{table}</table></body></html>',
@@ -57,9 +90,10 @@ const Home = () => {
       document.getElementById("dlink").click();
     };
   }();
-  console.log("programStages>>>>>>>", programStages);
-  console.log("eventData>>>>>", eventData);
-  console.log("dataElements>>>>>>", dataElements);
+
+  // console.log("programStages>>>>>>>", programStages);
+  // console.log("eventData>>>>>", eventData);
+  // console.log("dataElements>>>>>>", dataElements);
   useEffect(() => {
     if (show.value == true) {
       fetchRecords();
@@ -75,12 +109,15 @@ const Home = () => {
   }, [selectedProgramValue]);
   useEffect(() => {
     HeaderData(header1);
-  }, [header1]);
+    HeaderModify(modifyheader);
+  }, [header1, modifyheader]);
   async function fetchRecordsAll() {
     const AllprogramStages = await OPDService.ProgramStages();
     const allDataElements = await OPDService.AllDataelement();
+    const ModifyHeaderData = await OPDService.ModifyTableHeader();
     setProgramStages(AllprogramStages);
     setDataElements(allDataElements);
+    setModifyheader(ModifyHeaderData);
   }
   async function fetchRecords() {
     const eventResponse = await OPDService.EventAPi(selectedProgramValue, show);
@@ -102,11 +139,12 @@ const Home = () => {
     setHeader1(allTableHeaderData);
   }
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10; // Adjust this value to set the number of items per page
+  const itemsPerPage = pagesize; // Adjust this value to set the number of items per page
 
   const handlePageChange = pageNumber => {
     setCurrentPage(pageNumber);
   };
+
   // var val = () => {
   //   const indexOfLastItem = currentPage * itemsPerPage;
   //   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -238,42 +276,51 @@ const Home = () => {
           return !searchValue || attribute && attribute.value.includes(searchValue);
         });
       }).slice(indexOfFirstItem, indexOfLastItem);
-      console.log("filteredData>>>>>", filteredData);
+      // console.log("filteredData>>>>>", filteredData);
+
       return filteredData.map((ele, index) => {
         var _header1$programTrack;
         return /*#__PURE__*/React.createElement(TableRow, {
           key: index,
-          className: classes.zebraStriping
+          className: `${classes.zebraStriping} ${classes.borderRemove}`
         }, header1 === null || header1 === void 0 ? void 0 : (_header1$programTrack = header1.programTrackedEntityAttributes) === null || _header1$programTrack === void 0 ? void 0 : _header1$programTrack.map(attribute => {
-          var _attribute$trackedEnt, _attribute$trackedEnt2, _attribute$trackedEnt4, _attribute$trackedEnt5, _attribute$trackedEnt6;
-          console.log("ele>>>>>>>>>>", attribute === null || attribute === void 0 ? void 0 : (_attribute$trackedEnt = attribute.trackedEntityAttribute) === null || _attribute$trackedEnt === void 0 ? void 0 : _attribute$trackedEnt.id);
-          const colorId = attribute === null || attribute === void 0 ? void 0 : (_attribute$trackedEnt2 = attribute.trackedEntityAttribute) === null || _attribute$trackedEnt2 === void 0 ? void 0 : _attribute$trackedEnt2.id;
-          const foundAttribute = ele.attributes.find(attr => {
-            var _attribute$trackedEnt3;
-            return attr.attribute === (attribute === null || attribute === void 0 ? void 0 : (_attribute$trackedEnt3 = attribute.trackedEntityAttribute) === null || _attribute$trackedEnt3 === void 0 ? void 0 : _attribute$trackedEnt3.id);
+          var _attribute$trackedEnt2, _attribute$trackedEnt3, _attribute$trackedEnt4;
+          //change here
+          const matchedHeader = resultHeader.find(header => {
+            var _attribute$trackedEnt;
+            const final = (header === null || header === void 0 ? void 0 : header.attribute) === (attribute === null || attribute === void 0 ? void 0 : (_attribute$trackedEnt = attribute.trackedEntityAttribute) === null || _attribute$trackedEnt === void 0 ? void 0 : _attribute$trackedEnt.id);
+            return final;
           });
-          console.log("foundAttribute>>>>", foundAttribute);
+          const colorId = matchedHeader === null || matchedHeader === void 0 ? void 0 : matchedHeader.attribute;
+          const foundAttribute = ele.attributes.find(attr => attr.attribute === (matchedHeader === null || matchedHeader === void 0 ? void 0 : matchedHeader.attribute));
+          // const colorId = attribute?.trackedEntityAttribute?.id;
+
+          // const foundAttribute = ele.attributes.find(
+          //   (attr) =>
+          //     attr.attribute === attribute?.trackedEntityAttribute?.id
+          // );
+
           const TrackID = ele.trackedEntityInstance;
-          console.log("TrackID>>>", TrackID);
-          return /*#__PURE__*/React.createElement(React.Fragment, null, colorId === "EMY2mCFePQj" && foundAttribute && foundAttribute.value >= 4 ? /*#__PURE__*/React.createElement(TableCell, {
+          // console.log("TrackID>>>", TrackID);
+          return /*#__PURE__*/React.createElement(React.Fragment, null, matchedHeader && colorId === "EMY2mCFePQj" && foundAttribute && foundAttribute.value >= 4 ? /*#__PURE__*/React.createElement(TableCell, {
+            key: attribute === null || attribute === void 0 ? void 0 : (_attribute$trackedEnt2 = attribute.trackedEntityAttribute) === null || _attribute$trackedEnt2 === void 0 ? void 0 : _attribute$trackedEnt2.id,
+            className: `${classes.uniqueColorRed} ${classes.itemAlign} ${classes.borderRemove}`
+          }, /*#__PURE__*/React.createElement("div", {
+            onClick: () => setShow({
+              value: true,
+              id: TrackID
+            })
+          }, foundAttribute ? foundAttribute.value : "")) : matchedHeader && colorId === "EMY2mCFePQj" && foundAttribute && foundAttribute.value <= 4 ? /*#__PURE__*/React.createElement(TableCell, {
+            key: attribute === null || attribute === void 0 ? void 0 : (_attribute$trackedEnt3 = attribute.trackedEntityAttribute) === null || _attribute$trackedEnt3 === void 0 ? void 0 : _attribute$trackedEnt3.id,
+            className: `${classes.uniqueColorGreen} ${classes.itemAlign} ${classes.borderRemove}`
+          }, /*#__PURE__*/React.createElement("div", {
+            onClick: () => setShow({
+              value: true,
+              id: TrackID
+            })
+          }, foundAttribute ? foundAttribute.value : "")) : matchedHeader && /*#__PURE__*/React.createElement(TableCell, {
             key: attribute === null || attribute === void 0 ? void 0 : (_attribute$trackedEnt4 = attribute.trackedEntityAttribute) === null || _attribute$trackedEnt4 === void 0 ? void 0 : _attribute$trackedEnt4.id,
-            className: `${classes.uniqueColorRed} ${classes.itemAlign}`
-          }, /*#__PURE__*/React.createElement("div", {
-            onClick: () => setShow({
-              value: true,
-              id: TrackID
-            })
-          }, foundAttribute ? foundAttribute.value : "")) : colorId === "EMY2mCFePQj" && foundAttribute && foundAttribute.value <= 4 ? /*#__PURE__*/React.createElement(TableCell, {
-            key: attribute === null || attribute === void 0 ? void 0 : (_attribute$trackedEnt5 = attribute.trackedEntityAttribute) === null || _attribute$trackedEnt5 === void 0 ? void 0 : _attribute$trackedEnt5.id,
-            className: `${classes.uniqueColorGreen} ${classes.itemAlign}`
-          }, /*#__PURE__*/React.createElement("div", {
-            onClick: () => setShow({
-              value: true,
-              id: TrackID
-            })
-          }, foundAttribute ? foundAttribute.value : "")) : /*#__PURE__*/React.createElement(TableCell, {
-            key: attribute === null || attribute === void 0 ? void 0 : (_attribute$trackedEnt6 = attribute.trackedEntityAttribute) === null || _attribute$trackedEnt6 === void 0 ? void 0 : _attribute$trackedEnt6.id,
-            className: classes.itemAlign
+            className: `${classes.itemAlign} ${classes.borderRemove}`
           }, /*#__PURE__*/React.createElement("div", {
             onClick: () => setShow({
               value: true,
@@ -323,6 +370,27 @@ const Home = () => {
     }
   }
 
+  function HeaderModify(modifyheader) {
+    const ModifyBlank = [];
+    if (modifyheader.trackedEntityAttributes !== undefined) {
+      for (var j = 0; j < modifyheader.trackedEntityAttributes.length; j++) {
+        if (modifyheader.trackedEntityAttributes[j].attributeValues !== undefined) {
+          for (var k = 0; k < modifyheader.trackedEntityAttributes[j].attributeValues.length; k++) {
+            var _modifyheader$tracked, _modifyheader$tracked2, _modifyheader$tracked3, _modifyheader$tracked4, _modifyheader$tracked5;
+            if ((modifyheader === null || modifyheader === void 0 ? void 0 : (_modifyheader$tracked = modifyheader.trackedEntityAttributes[j]) === null || _modifyheader$tracked === void 0 ? void 0 : (_modifyheader$tracked2 = _modifyheader$tracked.attributeValues[k]) === null || _modifyheader$tracked2 === void 0 ? void 0 : (_modifyheader$tracked3 = _modifyheader$tracked2.attribute) === null || _modifyheader$tracked3 === void 0 ? void 0 : _modifyheader$tracked3.code) === "showInLineListTEA" && (modifyheader === null || modifyheader === void 0 ? void 0 : (_modifyheader$tracked4 = modifyheader.trackedEntityAttributes[j]) === null || _modifyheader$tracked4 === void 0 ? void 0 : (_modifyheader$tracked5 = _modifyheader$tracked4.attributeValues[k]) === null || _modifyheader$tracked5 === void 0 ? void 0 : _modifyheader$tracked5.value) === "true") {
+              const customIDAttribute = {
+                attribute: modifyheader.trackedEntityAttributes[j].id,
+                displayName: modifyheader.trackedEntityAttributes[j].name,
+                value: ""
+              };
+              ModifyBlank.push(customIDAttribute);
+              setResultHeader(ModifyBlank);
+            }
+          }
+        }
+      }
+    }
+  }
   const getNameProgameStage = id => {
     var _programStages$progra;
     const programStage = programStages === null || programStages === void 0 ? void 0 : (_programStages$progra = programStages.programStages) === null || _programStages$progra === void 0 ? void 0 : _programStages$progra.find(stage => stage.id === id);
@@ -333,7 +401,8 @@ const Home = () => {
     const dataelementName = dataElements === null || dataElements === void 0 ? void 0 : (_dataElements$dataEle = dataElements.dataElements) === null || _dataElements$dataEle === void 0 ? void 0 : _dataElements$dataEle.find(stage => stage.id === id);
     return dataelementName ? dataelementName.name : "Unknown";
   };
-  console.log("header1?.programTrackedEntityAttributes>>>>", header1 === null || header1 === void 0 ? void 0 : header1.programTrackedEntityAttributes);
+  // console.log("header1?.programTrackedEntityAttributes>>>>", header1);
+  // console.log("modify?.programTrackedEntityAttributes>>>>", modifyheader);
   return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
     className: classes.container
   }, /*#__PURE__*/React.createElement("div", {
@@ -347,7 +416,12 @@ const Home = () => {
       padding: "5px"
     }
   }, /*#__PURE__*/React.createElement("div", null, options.length > 0 && /*#__PURE__*/React.createElement("select", {
-    onChange: handleSelectChange
+    onChange: handleSelectChange,
+    style: {
+      marginRight: "5px",
+      background: darkMode ? "#474d84" : "#e9ecef",
+      color: darkMode ? "rgba(244, 244, 245, .6)" : "black"
+    }
   }, /*#__PURE__*/React.createElement("option", {
     value: ""
   }, "Select Program for Event List"), options.map(option => /*#__PURE__*/React.createElement("option", {
@@ -357,10 +431,33 @@ const Home = () => {
       name: option[1]
     })
   }, option[1]))), /*#__PURE__*/React.createElement("button", {
-    onClick: toggleMode
+    onClick: toggleMode,
+    style: {
+      marginRight: "5px",
+      background: darkMode ? "#474d84" : "#e9ecef",
+      color: darkMode ? "rgba(244, 244, 245, .6)" : "black"
+    }
   }, darkMode ? "Light Mode" : "Dark Mode"), /*#__PURE__*/React.createElement("button", {
+    style: {
+      marginRight: "5px",
+      background: darkMode ? "#474d84" : "#e9ecef",
+      color: darkMode ? "rgba(244, 244, 245, .6)" : "black"
+    },
     onClick: () => tableToExcel("report-table", "Timor Event List")
-  }, "Export Data")), /*#__PURE__*/React.createElement(Modal, {
+  }, "Export Data"), /*#__PURE__*/React.createElement("select", {
+    style: {
+      marginRight: "5px",
+      background: darkMode ? "#474d84" : "#e9ecef",
+      color: darkMode ? "rgba(244, 244, 245, .6)" : "black"
+    },
+    onChange: e => setPagesize(Number(e.target.value))
+  }, /*#__PURE__*/React.createElement("option", {
+    value: "10"
+  }, "Show 10"), /*#__PURE__*/React.createElement("option", {
+    value: "50"
+  }, "Show 50"), /*#__PURE__*/React.createElement("option", {
+    value: "100"
+  }, "Show 100"))), /*#__PURE__*/React.createElement(Modal, {
     show: show.value,
     onClose: () => setShow({
       value: false
@@ -369,14 +466,43 @@ const Home = () => {
     className: darkMode ? classes.darkTable : classes.lightTable
   }, /*#__PURE__*/React.createElement(TableRow, null, /*#__PURE__*/React.createElement(TableCell, null, "Selected Program:"), /*#__PURE__*/React.createElement(TableCell, null, programName ? programName : "")), eventData === null || eventData === void 0 ? void 0 : (_eventData$events = eventData.events) === null || _eventData$events === void 0 ? void 0 : _eventData$events.map((event, index) => {
     var _event$dataValues, _event$dataValues2;
-    return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement(TableRow, null, /*#__PURE__*/React.createElement(TableCell, null, "Program Stage:"), /*#__PURE__*/React.createElement(TableCell, null, getNameProgameStage(event === null || event === void 0 ? void 0 : event.programStage))), /*#__PURE__*/React.createElement(TableRow, {
+    return /*#__PURE__*/React.createElement(React.Fragment, {
+      key: index
+    }, /*#__PURE__*/React.createElement(TableRow, {
       className: classes.zebraStriping
-    }, /*#__PURE__*/React.createElement(TableCell, null, "Event Date:"), /*#__PURE__*/React.createElement(TableCell, null, event.eventDate ? event.eventDate.split("T")[0] : "")), /*#__PURE__*/React.createElement(TableRow, null, /*#__PURE__*/React.createElement(TableCell, null, "Status:"), /*#__PURE__*/React.createElement(TableCell, null, event.status)), (event === null || event === void 0 ? void 0 : (_event$dataValues = event.dataValues) === null || _event$dataValues === void 0 ? void 0 : _event$dataValues.length) > 0 && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("span", null, "DataElements"), /*#__PURE__*/React.createElement(TableRow, {
+    }, /*#__PURE__*/React.createElement(TableCell, {
+      className: classes.borderRemove
+    }, "Program Stage:"), /*#__PURE__*/React.createElement(TableCell, {
+      className: classes.borderRemove
+    }, getNameProgameStage(event === null || event === void 0 ? void 0 : event.programStage))), /*#__PURE__*/React.createElement(TableRow, {
       className: classes.zebraStriping
-    }, event === null || event === void 0 ? void 0 : (_event$dataValues2 = event.dataValues) === null || _event$dataValues2 === void 0 ? void 0 : _event$dataValues2.map((dataValue, idx) => /*#__PURE__*/React.createElement(TableRow, {
+    }, /*#__PURE__*/React.createElement(TableCell, {
+      className: classes.borderRemove
+    }, "Event Date:"), /*#__PURE__*/React.createElement(TableCell, {
+      className: classes.borderRemove
+    }, event.eventDate ? event.eventDate.split("T")[0] : "")), /*#__PURE__*/React.createElement(TableRow, {
+      className: classes.zebraStriping
+    }, /*#__PURE__*/React.createElement(TableCell, {
+      className: classes.borderRemove
+    }, "Status:"), /*#__PURE__*/React.createElement(TableCell, {
+      className: classes.borderRemove
+    }, event.status)), (event === null || event === void 0 ? void 0 : (_event$dataValues = event.dataValues) === null || _event$dataValues === void 0 ? void 0 : _event$dataValues.length) > 0 && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(TableRow, {
+      className: classes.zebraStriping
+    }, /*#__PURE__*/React.createElement(TableCell, {
+      colSpan: 2,
+      style: {
+        marginLeft: "12px",
+        lineHeight: "35px"
+      },
+      className: classes.borderRemove
+    }, "DataElements")), event === null || event === void 0 ? void 0 : (_event$dataValues2 = event.dataValues) === null || _event$dataValues2 === void 0 ? void 0 : _event$dataValues2.map((dataValue, idx) => /*#__PURE__*/React.createElement(TableRow, {
       key: idx,
       className: classes.zebraStriping
-    }, /*#__PURE__*/React.createElement(TableCell, null, getNameDataElement(dataValue === null || dataValue === void 0 ? void 0 : dataValue.dataElement), ":"), /*#__PURE__*/React.createElement(TableCell, null, " ", dataValue.value))))));
+    }, /*#__PURE__*/React.createElement(TableCell, {
+      className: classes.borderRemove
+    }, getNameDataElement(dataValue === null || dataValue === void 0 ? void 0 : dataValue.dataElement), ":"), /*#__PURE__*/React.createElement(TableCell, {
+      className: classes.borderRemove
+    }, dataValue.value === "true" ? "YES" : dataValue.value === "false" ? "NO" : dataValue.value)))));
   }))), /*#__PURE__*/React.createElement("div", {
     className: classes.desgin
   }, /*#__PURE__*/React.createElement("a", {
@@ -386,20 +512,28 @@ const Home = () => {
   }, /*#__PURE__*/React.createElement(Table, {
     className: darkMode ? classes.darkTable : classes.lightTable
   }, /*#__PURE__*/React.createElement(TableRow, null, header1 === null || header1 === void 0 ? void 0 : (_header1$programTrack7 = header1.programTrackedEntityAttributes) === null || _header1$programTrack7 === void 0 ? void 0 : _header1$programTrack7.map(ele => {
-    var _ele$trackedEntityAtt, _ele$trackedEntityAtt2;
-    return /*#__PURE__*/React.createElement(TableCell, {
-      key: ele === null || ele === void 0 ? void 0 : (_ele$trackedEntityAtt = ele.trackedEntityAttribute) === null || _ele$trackedEntityAtt === void 0 ? void 0 : _ele$trackedEntityAtt.id,
+    const matchedHeader = resultHeader.find(header => {
+      var _ele$trackedEntityAtt;
+      const final = (header === null || header === void 0 ? void 0 : header.displayName) === (ele === null || ele === void 0 ? void 0 : (_ele$trackedEntityAtt = ele.trackedEntityAttribute) === null || _ele$trackedEntityAtt === void 0 ? void 0 : _ele$trackedEntityAtt.name);
+      return final;
+    });
+    return /*#__PURE__*/React.createElement(React.Fragment, null, matchedHeader && /*#__PURE__*/React.createElement(TableCell, {
+      key: matchedHeader === null || matchedHeader === void 0 ? void 0 : matchedHeader.attribute,
       style: {
         whiteSpace: "nowrap"
       },
       className: classes.itemAlign
-    }, /*#__PURE__*/React.createElement("b", null, ele === null || ele === void 0 ? void 0 : (_ele$trackedEntityAtt2 = ele.trackedEntityAttribute) === null || _ele$trackedEntityAtt2 === void 0 ? void 0 : _ele$trackedEntityAtt2.name));
+    }, matchedHeader ? /*#__PURE__*/React.createElement("b", null, matchedHeader === null || matchedHeader === void 0 ? void 0 : matchedHeader.displayName) :
+    // <b>{ele?.trackedEntityAttribute?.name}</b>
+    null));
   })), /*#__PURE__*/React.createElement(TableRow, null, header1 === null || header1 === void 0 ? void 0 : (_header1$programTrack8 = header1.programTrackedEntityAttributes) === null || _header1$programTrack8 === void 0 ? void 0 : _header1$programTrack8.map(ele => {
-    var _ele$trackedEntityAtt3, _ele$trackedEntityAtt4, _ele$trackedEntityAtt5;
-    return /*#__PURE__*/React.createElement(React.Fragment, {
-      key: ele === null || ele === void 0 ? void 0 : (_ele$trackedEntityAtt3 = ele.trackedEntityAttribute) === null || _ele$trackedEntityAtt3 === void 0 ? void 0 : _ele$trackedEntityAtt3.id
-    }, /*#__PURE__*/React.createElement(TableCell, {
-      key: ele === null || ele === void 0 ? void 0 : (_ele$trackedEntityAtt4 = ele.trackedEntityAttribute) === null || _ele$trackedEntityAtt4 === void 0 ? void 0 : _ele$trackedEntityAtt4.id,
+    const matchedHeader = resultHeader.find(header => {
+      var _ele$trackedEntityAtt2;
+      const final = (header === null || header === void 0 ? void 0 : header.displayName) === (ele === null || ele === void 0 ? void 0 : (_ele$trackedEntityAtt2 = ele.trackedEntityAttribute) === null || _ele$trackedEntityAtt2 === void 0 ? void 0 : _ele$trackedEntityAtt2.name);
+      return final;
+    });
+    return /*#__PURE__*/React.createElement(React.Fragment, null, matchedHeader && /*#__PURE__*/React.createElement(TableCell, {
+      key: matchedHeader === null || matchedHeader === void 0 ? void 0 : matchedHeader.attribute,
       style: {
         whiteSpace: "nowrap"
       },
@@ -407,13 +541,13 @@ const Home = () => {
       // className={darkMode ? classes.darkTable : classes.lightTable}
     }, /*#__PURE__*/React.createElement("input", {
       type: "text",
-      placeholder: `Search ${ele === null || ele === void 0 ? void 0 : (_ele$trackedEntityAtt5 = ele.trackedEntityAttribute) === null || _ele$trackedEntityAtt5 === void 0 ? void 0 : _ele$trackedEntityAtt5.name}`,
-      onChange: e => {
-        var _ele$trackedEntityAtt6;
-        return handleSearchChange(ele === null || ele === void 0 ? void 0 : (_ele$trackedEntityAtt6 = ele.trackedEntityAttribute) === null || _ele$trackedEntityAtt6 === void 0 ? void 0 : _ele$trackedEntityAtt6.id, e.target.value);
-      }
+      placeholder: `Search ${matchedHeader === null || matchedHeader === void 0 ? void 0 : matchedHeader.displayName}`,
+      className: classes.searchBackgroundColor,
+      onChange: e => handleSearchChange(matchedHeader === null || matchedHeader === void 0 ? void 0 : matchedHeader.attribute, e.target.value)
     })));
-  })), isLoading ? /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement(CircularProgress, null)) : /*#__PURE__*/React.createElement(TableBody, null, val()))), /*#__PURE__*/React.createElement(ReactPaginate, {
+  })), isLoading ? /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement(CircularProgress, null)) : /*#__PURE__*/React.createElement(TableBody, {
+    className: classes.borderRemove
+  }, val()))), /*#__PURE__*/React.createElement(ReactPaginate, {
     activePage: currentPage,
     itemsCountPerPage: itemsPerPage,
     totalItemsCount: Data,

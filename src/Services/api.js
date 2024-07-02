@@ -64,9 +64,17 @@ export class OPDService {
         let response = await fetch(`../../programs/${selectedProgramValue}.json?fields=programTrackedEntityAttributes%5BtrackedEntityAttribute%5Bid,name,formName,attributeValues%5Battribute%5Bid,name,code%5D,value%5D%5D%5D`, requestOptions)
         return response.json();
     }
+
+    static ModifyTableHeader = async () => {
+        const requestOptions = {
+            method: 'GET',
+           
+        }
+        let response = await fetch(`../../trackedEntityAttributes.json?fields=id,name,attributeValues[attribute[id,name,code,value],value&filter=attributeValues.attribute.id:eq:YDNZ4P1LYXv&paging=false`, requestOptions)
+        return response.json();
+    }
   
 }
-
 
 
 

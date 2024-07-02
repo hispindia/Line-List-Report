@@ -19,7 +19,7 @@
 }
 .darkTable {
   background-color: #25284b !important;
-  color: white !important;
+  color: rgba(244, 244, 245, .6) !important;
 }
 .lightTable {
   background-color: white !important;
@@ -53,4 +53,11 @@
   background-color: #f9f9f9; /* Light background color */
   border-radius: 8px;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Box shadow */
+}
+.borderRemove{
+  border: none !important;
+}
+.searchBackgroundColor {
+  background-color: rgba(244, 244, 245, .6) !important;
+
 }

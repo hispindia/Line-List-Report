@@ -23,17 +23,41 @@ const Home = () => {
   const [programStages, setProgramStages] = useState([]);
   const [dataElements, setDataElements] = useState([]);
   const [programName, setProgramName] = useState("");
-  const [darkMode, setDarkMode] = useState(
-    localStorage.getItem("darkMode") === "true"
-  );
-  useEffect(() => {
-    localStorage.setItem("darkMode", darkMode);
-  }, [darkMode]);
+
+  const [darkMode, setDarkMode] = useState(true);
+  const [modifyheader, setModifyheader] = useState([]);
+  const [resultHeader, setResultHeader] = useState([]);
+  const [pagesize, setPagesize] = useState(10);
+
   const componentRef = useRef(null);
   const toggleMode = () => {
     setDarkMode(!darkMode);
   };
+
   //Table Excel funtion
+  // const tableToExcel = (function () {
+  //   var uri = "data:application/vnd.ms-excel;base64,",
+  //     template =
+  //       '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body><table>{table}</table></body></html>',
+  //     base64 = function (s) {
+  //       return window.btoa(unescape(encodeURIComponent(s)));
+  //     },
+  //     format = function (s, c) {
+  //       return s.replace(/{(\w+)}/g, function (m, p) {
+  //         return c[p];
+  //       });
+  //     };
+  //   return function (table, name, filename) {
+  //     if (!table.nodeType) table = document.getElementById(table);
+
+  //     var ctx = { worksheet: name || "Worksheet", table: table.innerHTML };
+  //     document.getElementById("dlink").href =
+  //       uri + base64(format(template, ctx));
+  //     document.getElementById("dlink").download = `${name}.xls`;
+  //     document.getElementById("dlink").click();
+  //   };
+  // })();
+
   const tableToExcel = (function () {
     var uri = "data:application/vnd.ms-excel;base64,",
       template =
@@ -48,7 +72,6 @@ const Home = () => {
       };
     return function (table, name, filename) {
       if (!table.nodeType) table = document.getElementById(table);
-
       var ctx = { worksheet: name || "Worksheet", table: table.innerHTML };
       document.getElementById("dlink").href =
         uri + base64(format(template, ctx));
@@ -57,9 +80,6 @@ const Home = () => {
     };
   })();
 
-  console.log("programStages>>>>>>>", programStages);
-  console.log("eventData>>>>>", eventData);
-  console.log("dataElements>>>>>>", dataElements);
   useEffect(() => {
     if (show.value == true) {
       fetchRecords();
@@ -76,12 +96,15 @@ const Home = () => {
   }, [selectedProgramValue]);
   useEffect(() => {
     HeaderData(header1);
-  }, [header1]);
+    HeaderModify(modifyheader);
+  }, [header1, modifyheader]);
   async function fetchRecordsAll() {
     const AllprogramStages = await OPDService.ProgramStages();
     const allDataElements = await OPDService.AllDataelement();
+    const ModifyHeaderData = await OPDService.ModifyTableHeader();
     setProgramStages(AllprogramStages);
     setDataElements(allDataElements);
+    setModifyheader(ModifyHeaderData);
   }
 
   async function fetchRecords() {
@@ -106,131 +129,12 @@ const Home = () => {
   }
 
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10; // Adjust this value to set the number of items per page
+  const itemsPerPage = pagesize; // Adjust this value to set the number of items per page
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
-  // var val = () => {
-  //   const indexOfLastItem = currentPage * itemsPerPage;
-  //   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  // //   const currentData = event(indexOfFirstItem, indexOfLastItem);
-  // //  {console.log("currrrrrr",currentData)}
-  //   if (event != undefined) {
-  //     const v = event.map((ele, index) => {
-  //      {console.log("777",ele)}
-  //       if (ele) {
-  //         var proId = ele.program;
-  //         var name = [],
-  //           attribute = [],
-  //           // data = [],
-  //           date = [];
-  //           const data = ele.attributes;
-  //           // setData(data.length)
 
-  //         //date['value'] =  JSON.stringify(new Date(ele.eventDate)).slice(1,11);
-  //         // date["value"] = ele.eventDate.substring(0, 10);
-
-  //         // for (let program of options) {
-  //         //   if (program.id == proId) {
-  //         //     name["value"] = program.name;
-  //         //   }
-  //         // }
-
-  //         // sashikat
-  //         // for (let value of ele.attributes) {
-  //         //   attribute["0"] = name;
-  //         //   if (value.attribute == "oh9MPiyR2Vl") {
-  //         //     attribute["1"] = value;
-  //         //   }
-  //         //   if (value.attribute == "HkdYrf7NPbr") {
-  //         //     attribute["2"] = value;
-  //         //   }
-  //         //   if (value.attribute == "ssCmTkWjung") {
-  //         //     attribute["3"] = value;
-  //         //   }
-  //         //   if (value.attribute == "hAfeN4FmzHa") {
-  //         //     attribute["4"] = value;
-  //         //   }
-
-  //         // for(let i=0; i< atrribeyesArr.length; i++){
-  //         //   attribute.push({i:atrribeyesArr[i]})
-  //         // }
-
-  //         // }
-  //         // if (!attribute["1"]) {
-  //         //   let data = [{ value: "" }];
-  //         //   attribute["1"] = data;
-  //         // }
-  //         // if (!attribute["2"]) {
-  //         //   let data = [{ value: "" }];
-  //         //   attribute["2"] = data;
-  //         // }
-  //         // if (!attribute["3"]) {
-  //         //   let data = [{ value: "" }];
-  //         //   attribute["3"] = data;
-  //         // }
-  //         // if (!attribute["4"]) {
-  //         //   let data = [{ value: "" }];
-  //         //   attribute["4"] = data;
-  //         // }
-
-  //         console.log('data',data)
-  //         // console.log("DATA",Data)
-  //         return (
-  //           <>
-  //             {data.length ? (
-  //               <TableRow>
-  //                 {data.map((ele) => (
-  //                   <>
-  //                   <TableCell>{ele.value}</TableCell>
-
-  //                   </>
-  //                 ))}
-  //                 {/* <Button primary={true} onClick={() => onEdit(ele.orgUnit, ele.event, ele.dataValues)}>Edit</Button> */}
-  //               </TableRow>
-  //             ) : (
-  //               ""
-  //             )}
-  //           </>
-  //         );
-  //       }
-  //     });
-  //     return v;
-  //   }
-  // };
-
-  // const val = () => {
-  //   const indexOfLastItem = currentPage * itemsPerPage;
-  //   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-
-  //   if (event !== undefined) {
-  //     const filteredData = event
-  //       .filter((ele) => {
-  //         return Object.keys(searchValues).every((attributeId) => {
-  //           const searchValue = searchValues[attributeId];
-  //           const attribute = ele.attributes.find(
-  //             (attr) => attr.attribute === attributeId
-  //           );
-  //           return (
-  //             !searchValue ||
-  //             (attribute && attribute.value.includes(searchValue))
-  //           );
-  //         });
-  //       })
-  //       .slice(indexOfFirstItem, indexOfLastItem);
-
-  //     return filteredData.map((ele, index) => (
-  //       <TableRow key={index}>
-  //         {ele.attributes.map((attr, attrIndex) => (
-  //           <TableCell key={attrIndex}>{attr.value}</TableCell>
-  //         ))}
-  //       </TableRow>
-  //     ));
-  //   } else {
-  //     return null; // Handle case where event is undefined or empty
-  //   }
-  // };
   const val = () => {
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -250,33 +154,46 @@ const Home = () => {
           });
         })
         .slice(indexOfFirstItem, indexOfLastItem);
-      console.log("filteredData>>>>>", filteredData);
+      // console.log("filteredData>>>>>", filteredData);
 
       return filteredData.map((ele, index) => {
         return (
-          <TableRow key={index} className={classes.zebraStriping}>
+          <TableRow
+            key={index}
+            className={`${classes.zebraStriping} ${classes.borderRemove}`}
+          >
             {header1?.programTrackedEntityAttributes?.map((attribute) => {
-              console.log(
-                "ele>>>>>>>>>>",
-                attribute?.trackedEntityAttribute?.id
-              );
-              const colorId = attribute?.trackedEntityAttribute?.id;
+              //change here
+              const matchedHeader = resultHeader.find((header) => {
+                const final =
+                  header?.attribute === attribute?.trackedEntityAttribute?.id;
+
+                return final;
+              });
+
+              const colorId = matchedHeader?.attribute;
 
               const foundAttribute = ele.attributes.find(
-                (attr) =>
-                  attr.attribute === attribute?.trackedEntityAttribute?.id
+                (attr) => attr.attribute === matchedHeader?.attribute
               );
-              console.log("foundAttribute>>>>", foundAttribute);
+              // const colorId = attribute?.trackedEntityAttribute?.id;
+
+              // const foundAttribute = ele.attributes.find(
+              //   (attr) =>
+              //     attr.attribute === attribute?.trackedEntityAttribute?.id
+              // );
+
               const TrackID = ele.trackedEntityInstance;
-              console.log("TrackID>>>", TrackID);
+              // console.log("TrackID>>>", TrackID);
               return (
                 <>
-                  {colorId === "EMY2mCFePQj" &&
+                  {matchedHeader &&
+                  colorId === "EMY2mCFePQj" &&
                   foundAttribute &&
                   foundAttribute.value >= 4 ? (
                     <TableCell
                       key={attribute?.trackedEntityAttribute?.id}
-                      className={`${classes.uniqueColorRed} ${classes.itemAlign}`}
+                      className={`${classes.uniqueColorRed} ${classes.itemAlign} ${classes.borderRemove}`}
                     >
                       <div
                         onClick={() => setShow({ value: true, id: TrackID })}
@@ -284,12 +201,13 @@ const Home = () => {
                         {foundAttribute ? foundAttribute.value : ""}
                       </div>
                     </TableCell>
-                  ) : colorId === "EMY2mCFePQj" &&
+                  ) : matchedHeader &&
+                    colorId === "EMY2mCFePQj" &&
                     foundAttribute &&
                     foundAttribute.value <= 4 ? (
                     <TableCell
                       key={attribute?.trackedEntityAttribute?.id}
-                      className={`${classes.uniqueColorGreen} ${classes.itemAlign}`}
+                      className={`${classes.uniqueColorGreen} ${classes.itemAlign} ${classes.borderRemove}`}
                     >
                       <div
                         onClick={() => setShow({ value: true, id: TrackID })}
@@ -298,16 +216,18 @@ const Home = () => {
                       </div>
                     </TableCell>
                   ) : (
-                    <TableCell
-                      key={attribute?.trackedEntityAttribute?.id}
-                      className={classes.itemAlign}
-                    >
-                      <div
-                        onClick={() => setShow({ value: true, id: TrackID })}
+                    matchedHeader && (
+                      <TableCell
+                        key={attribute?.trackedEntityAttribute?.id}
+                        className={`${classes.itemAlign} ${classes.borderRemove}`}
                       >
-                        {foundAttribute ? foundAttribute.value : ""}
-                      </div>
-                    </TableCell>
+                        <div
+                          onClick={() => setShow({ value: true, id: TrackID })}
+                        >
+                          {foundAttribute ? foundAttribute.value : ""}
+                        </div>
+                      </TableCell>
+                    )
                   )}
                 </>
               );
@@ -377,6 +297,39 @@ const Home = () => {
     }
   }
 
+  function HeaderModify(modifyheader) {
+    const ModifyBlank = [];
+
+    if (modifyheader.trackedEntityAttributes !== undefined) {
+      for (var j = 0; j < modifyheader.trackedEntityAttributes.length; j++) {
+        if (
+          modifyheader.trackedEntityAttributes[j].attributeValues !== undefined
+        ) {
+          for (
+            var k = 0;
+            k < modifyheader.trackedEntityAttributes[j].attributeValues.length;
+            k++
+          ) {
+            if (
+              modifyheader?.trackedEntityAttributes[j]?.attributeValues[k]
+                ?.attribute?.code === "showInLineListTEA" &&
+              modifyheader?.trackedEntityAttributes[j]?.attributeValues[k]
+                ?.value === "true"
+            ) {
+              const customIDAttribute = {
+                attribute: modifyheader.trackedEntityAttributes[j].id,
+                displayName: modifyheader.trackedEntityAttributes[j].name,
+                value: "",
+              };
+              ModifyBlank.push(customIDAttribute);
+              setResultHeader(ModifyBlank);
+            }
+          }
+        }
+      }
+    }
+  }
+
   const getNameProgameStage = (id) => {
     const programStage = programStages?.programStages?.find(
       (stage) => stage.id === id
@@ -389,10 +342,7 @@ const Home = () => {
     );
     return dataelementName ? dataelementName.name : "Unknown";
   };
-  console.log(
-    "header1?.programTrackedEntityAttributes>>>>",
-    header1?.programTrackedEntityAttributes
-  );
+
   return (
     <>
       <div className={classes.container}>
@@ -403,7 +353,14 @@ const Home = () => {
           <div style={{ padding: "5px" }}>
             <div>
               {options.length > 0 && (
-                <select onChange={handleSelectChange}>
+                <select
+                  onChange={handleSelectChange}
+                  style={{
+                    marginRight: "5px",
+                    background: darkMode ? "#474d84" : "#e9ecef",
+                    color: darkMode ? "rgba(244, 244, 245, .6)" : "black",
+                  }}
+                >
                   <option value="">Select Program for Event List</option>
                   {options.map((option) => (
                     <option
@@ -415,14 +372,40 @@ const Home = () => {
                   ))}
                 </select>
               )}
-              <button onClick={toggleMode}>
+
+              <button
+                onClick={toggleMode}
+                style={{
+                  marginRight: "5px",
+                  background: darkMode ? "#474d84" : "#e9ecef",
+                  color: darkMode ? "rgba(244, 244, 245, .6)" : "black",
+                }}
+              >
                 {darkMode ? "Light Mode" : "Dark Mode"}
               </button>
               <button
+                style={{
+                  marginRight: "5px",
+                  background: darkMode ? "#474d84" : "#e9ecef",
+                  color: darkMode ? "rgba(244, 244, 245, .6)" : "black",
+                }}
                 onClick={() => tableToExcel("report-table", "Timor Event List")}
               >
                 Export Data
               </button>
+
+              <select
+                style={{
+                  marginRight: "5px",
+                  background: darkMode ? "#474d84" : "#e9ecef",
+                  color: darkMode ? "rgba(244, 244, 245, .6)" : "black",
+                }}
+                onChange={(e) => setPagesize(Number(e.target.value))}
+              >
+                <option value="10">Show 10</option>
+                <option value="50">Show 50</option>
+                <option value="100">Show 100</option>
+              </select>
             </div>
 
             <Modal show={show.value} onClose={() => setShow({ value: false })}>
@@ -434,43 +417,59 @@ const Home = () => {
                   <TableCell>{programName ? programName : ""}</TableCell>
                 </TableRow>
                 {eventData?.events?.map((event, index) => (
-                  <div>
-                    <TableRow>
-                      <TableCell>Program Stage:</TableCell>
-                      <TableCell>
+                  <React.Fragment key={index}>
+                    <TableRow className={classes.zebraStriping}>
+                      <TableCell className={classes.borderRemove}>
+                        Program Stage:
+                      </TableCell>
+                      <TableCell className={classes.borderRemove}>
                         {getNameProgameStage(event?.programStage)}
                       </TableCell>
                     </TableRow>
-
                     <TableRow className={classes.zebraStriping}>
-                      <TableCell>Event Date:</TableCell>
-                      <TableCell>
+                      <TableCell className={classes.borderRemove}>
+                        Event Date:
+                      </TableCell>
+                      <TableCell className={classes.borderRemove}>
                         {event.eventDate ? event.eventDate.split("T")[0] : ""}
                       </TableCell>
                     </TableRow>
-                    <TableRow>
-                      <TableCell>Status:</TableCell>
-                      <TableCell>{event.status}</TableCell>
+                    <TableRow className={classes.zebraStriping}>
+                      <TableCell className={classes.borderRemove}>
+                        Status:
+                      </TableCell>
+                      <TableCell className={classes.borderRemove}>
+                        {event.status}
+                      </TableCell>
                     </TableRow>
                     {event?.dataValues?.length > 0 && (
-                      <>
-                        <span>DataElements</span>
+                      <React.Fragment>
                         <TableRow className={classes.zebraStriping}>
-                          {event?.dataValues?.map((dataValue, idx) => (
-                            <TableRow
-                              key={idx}
-                              className={classes.zebraStriping}
-                            >
-                              <TableCell>
-                                {getNameDataElement(dataValue?.dataElement)}:
-                              </TableCell>
-                              <TableCell> {dataValue.value}</TableCell>
-                            </TableRow>
-                          ))}
+                          <TableCell
+                            colSpan={2}
+                            style={{ marginLeft: "12px", lineHeight: "35px" }}
+                            className={classes.borderRemove}
+                          >
+                            DataElements
+                          </TableCell>
                         </TableRow>
-                      </>
+                        {event?.dataValues?.map((dataValue, idx) => (
+                          <TableRow key={idx} className={classes.zebraStriping}>
+                            <TableCell className={classes.borderRemove}>
+                              {getNameDataElement(dataValue?.dataElement)}:
+                            </TableCell>
+                            <TableCell className={classes.borderRemove}>
+                              {dataValue.value === "true"
+                                ? "YES"
+                                : dataValue.value === "false"
+                                ? "NO"
+                                : dataValue.value}
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </React.Fragment>
                     )}
-                  </div>
+                  </React.Fragment>
                 ))}
               </Table>
             </Modal>
@@ -482,49 +481,83 @@ const Home = () => {
                   className={darkMode ? classes.darkTable : classes.lightTable}
                 >
                   <TableRow>
-                    {header1?.programTrackedEntityAttributes?.map((ele) => (
-                      <TableCell
-                        key={ele?.trackedEntityAttribute?.id}
-                        style={{ whiteSpace: "nowrap" }}
-                        className={classes.itemAlign}
-                      >
-                        <b >{ele?.trackedEntityAttribute?.name}</b>
-                      </TableCell>
-                    ))}
+                    {header1?.programTrackedEntityAttributes?.map((ele) => {
+                      const matchedHeader = resultHeader.find((header) => {
+                        const final =
+                          header?.displayName ===
+                          ele?.trackedEntityAttribute?.name;
+
+                        return final;
+                      });
+
+                      return (
+                        <>
+                          {matchedHeader && (
+                            <TableCell
+                              key={matchedHeader?.attribute}
+                              style={{ whiteSpace: "nowrap" }}
+                              className={classes.itemAlign}
+                            >
+                              {matchedHeader ? (
+                                <b>{matchedHeader?.displayName}</b>
+                              ) : // <b>{ele?.trackedEntityAttribute?.name}</b>
+                              null}
+                              {/* <b>{ele?.trackedEntityAttribute?.name}</b> */}
+                            </TableCell>
+                          )}
+                        </>
+                      );
+                    })}
                   </TableRow>
+
                   <TableRow>
-                    {header1?.programTrackedEntityAttributes?.map((ele) => (
-                      <React.Fragment key={ele?.trackedEntityAttribute?.id}>
-                        <TableCell
-                          key={ele?.trackedEntityAttribute?.id}
-                          style={{ whiteSpace: "nowrap" }}
-                          className={
-                            darkMode
-                              ? `${classes.searchBackground} ${classes.itemAlign}`
-                              : ` ${classes.itemAlign}`
-                          }
-                          // className={darkMode ? classes.darkTable : classes.lightTable}
-                        >
-                          <input
-                            type="text"
-                            placeholder={`Search ${ele?.trackedEntityAttribute?.name}`}
-                            onChange={(e) =>
-                              handleSearchChange(
-                                ele?.trackedEntityAttribute?.id,
-                                e.target.value
-                              )
-                            }
-                          />
-                        </TableCell>
-                      </React.Fragment>
-                    ))}
+                    {header1?.programTrackedEntityAttributes?.map((ele) => {
+                      const matchedHeader = resultHeader.find((header) => {
+                        const final =
+                          header?.displayName ===
+                          ele?.trackedEntityAttribute?.name;
+
+                        return final;
+                      });
+
+                      return (
+                        <>
+                          {matchedHeader && (
+                            <TableCell
+                              key={matchedHeader?.attribute}
+                              style={{ whiteSpace: "nowrap" }}
+                              className={
+                                darkMode
+                                  ? `${classes.searchBackground} ${classes.itemAlign}`
+                                  : ` ${classes.itemAlign}`
+                              }
+                              // className={darkMode ? classes.darkTable : classes.lightTable}
+                            >
+                              <input
+                                type="text"
+                                placeholder={`Search ${matchedHeader?.displayName}`}
+                                className={classes.searchBackgroundColor}
+                                onChange={(e) =>
+                                  handleSearchChange(
+                                    matchedHeader?.attribute,
+                                    e.target.value
+                                  )
+                                }
+                              />
+                            </TableCell>
+                          )}
+                        </>
+                      );
+                    })}
                   </TableRow>
                   {isLoading ? (
                     <div>
                       <CircularProgress />
                     </div>
                   ) : (
-                    <TableBody>{val()}</TableBody>
+                    <TableBody className={classes.borderRemove}>
+                      {val()}
+                    </TableBody>
                   )}
                 </Table>
               </div>

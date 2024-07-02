@@ -1,4 +1,4 @@
-/* pagination.css */
+pagination.css
 .pagination {
     display: flex;
     justify-content: center;
@@ -9,10 +9,10 @@
     display: inline-block;
     margin-right: 5px;
     border: 1px solid #ddd;
-    border-radius: 5px;
+    border-radius: 15px;
     padding: 5px 10px;
     cursor: pointer;
-    background-color: #fff;
+    background-color:  rgba(244, 244, 245, .6);
   }
   
   .pagination li:hover {
@@ -29,4 +29,16 @@
     opacity: 0.6;
     pointer-events: none;
   }
+  
+  .pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+  }
+  .page-link {
+    color: #00008B!important;/* Default text color for page numbers */
+    font-weight: 600;
+   
+  }
+
   
